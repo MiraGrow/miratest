@@ -1,35 +1,126 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soccer Player Popularity Voting</title>
+  <meta charset="UTF-8">
+  <title>좋아하는 축구선수</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0d47a1;
+      color: white;
+      line-height: 1.6;
+    }
+    header {
+      text-align: center;
+      padding: 60px 20px;
+      background: #1565c0;
+    }
+    header h1 {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    header p {
+      font-size: 18px;
+    }
+    header button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #ffeb3b;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: #000;
+    }
+    section {
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .gallery img {
+      width: 250px;
+      margin: 10px;
+      border-radius: 8px;
+    }
+    .players {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .player-card {
+      background: white;
+      color: #000;
+      padding: 20px;
+      border-radius: 8px;
+      width: 150px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .player-card:hover {
+      transform: scale(1.1);
+      background: #e3f2fd;
+    }
+    footer {
+      background: #1565c0;
+      padding: 20px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Vote for Your Favorite Soccer Player!</h1>
-    </header>
-    <main>
-        <section>
-            <h2>Top Soccer Players</h2>
-            <form id="voting-form">
-                <label for="player">Choose a player:</label>
-                <select id="player" name="player">
-                    <option value="messi">Lionel Messi</option>
-                    <option value="ronaldo">Cristiano Ronaldo</option>
-                    <option value="neymar">Neymar Jr.</option>
-                    <option value="mbappe">Kylian Mbappé</option>
-                </select>
-                <button type="submit">Vote</button>
-            </form>
-        </section>
-        <section id="results">
-            <h2>Vote Results</h2>
-            <p>Results will be displayed here after voting.</p>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 Soccer Vote. All rights reserved.</p>
-    </footer>
+  <!-- Header -->
+  <header>
+    <h1>좋아하는 축구선수</h1>
+    <p>축구 팬을 위한 새로운 플랫폼</p>
+    <button onclick="alert('정복하기 버튼 클릭!')">정복하기</button>
+  </header>
+
+  <!-- About -->
+  <section>
+    <h2>About</h2>
+    <p>
+      Our platform is dedicated to honoring the legends of soccer and their incredible contributions to the sport. 
+      We aim to create an engaging space for fans to voice their preferences and celebrate their favorite players.
+    </p>
+  </section>
+
+  <!-- Highlights -->
+  <section>
+    <h2>Highlights</h2>
+    <p>축구 선수들의 멋진 순간을 함께 즐겨보세요!</p>
+    <img src="https://via.placeholder.com/600x300?text=Soccer+Highlights" alt="Highlights">
+  </section>
+
+  <!-- Gallery -->
+  <section class="gallery">
+    <h2>Gallery</h2>
+    <img src="https://via.placeholder.com/250?text=Memorabilia" alt="Gallery1">
+    <img src="https://via.placeholder.com/250?text=Player+Action" alt="Gallery2">
+    <img src="https://via.placeholder.com/250?text=Fan+Art" alt="Gallery3">
+  </section>
+
+  <!-- Top Players -->
+  <section>
+    <h2>최고 선수들</h2>
+    <div class="players">
+      <div class="player-card" onclick="vote('리오넬 메시')">리오넬 메시</div>
+      <div class="player-card" onclick="vote('크리스티아누 호날두')">호날두</div>
+      <div class="player-card" onclick="vote('네이마르 주니어')">네이마르</div>
+    </div>
+    <p id="result" style="margin-top:20px; font-size:18px;"></p>
+  </section>
+
+  <!-- Contact -->
+  <footer>
+    <h2>Get in Touch</h2>
+    <p>Phone: 123-456-7890 | Email: hello@reallygreatsite.com</p>
+  </footer>
+
+  <script>
+    function vote(player) {
+      document.getElementById("result").innerText = player + " 선수에게 투표했습니다!";
+    }
+  </script>
 </body>
 </html>
