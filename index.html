@@ -2,69 +2,90 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>좋아하는 축구선수</title>
+  <title>Soccer Fan Platform</title>
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0d47a1;
-      color: white;
-      line-height: 1.6;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f5f5f5;
+      color: #333;
     }
+
     header {
+      background: linear-gradient(to right, #0d47a1, #1976d2);
+      color: white;
       text-align: center;
-      padding: 60px 20px;
-      background: #1565c0;
+      padding: 80px 20px;
     }
     header h1 {
-      font-size: 40px;
+      font-size: 48px;
       margin-bottom: 10px;
     }
     header p {
-      font-size: 18px;
+      font-size: 20px;
+      margin-bottom: 20px;
     }
     header button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
+      padding: 12px 25px;
+      font-size: 18px;
       background: #ffeb3b;
       border: none;
-      border-radius: 5px;
+      border-radius: 30px;
       cursor: pointer;
-      color: #000;
+      transition: background 0.3s;
     }
+    header button:hover {
+      background: #fbc02d;
+    }
+
     section {
-      padding: 40px 20px;
+      padding: 60px 20px;
       text-align: center;
     }
-    .gallery img {
-      width: 250px;
-      margin: 10px;
-      border-radius: 8px;
+    section h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #0d47a1;
     }
+
     .players {
       display: flex;
       justify-content: center;
-      gap: 20px;
-      margin-top: 20px;
+      gap: 30px;
+      flex-wrap: wrap;
     }
     .player-card {
       background: white;
-      color: #000;
+      color: #0d47a1;
       padding: 20px;
-      border-radius: 8px;
-      width: 150px;
+      border-radius: 12px;
+      width: 200px;
       cursor: pointer;
-      transition: transform 0.2s;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.3s, background 0.3s;
+    }
+    .player-card img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
     .player-card:hover {
-      transform: scale(1.1);
+      transform: translateY(-5px);
       background: #e3f2fd;
     }
+
+    #result {
+      margin-top: 25px;
+      font-size: 20px;
+      color: #1976d2;
+    }
+
     footer {
-      background: #1565c0;
-      padding: 20px;
+      background: #0d47a1;
+      color: white;
       text-align: center;
+      padding: 30px;
     }
   </style>
 </head>
@@ -76,39 +97,24 @@
     <button onclick="alert('정복하기 버튼 클릭!')">정복하기</button>
   </header>
 
-  <!-- About -->
-  <section>
-    <h2>About</h2>
-    <p>
-      Our platform is dedicated to honoring the legends of soccer and their incredible contributions to the sport. 
-      We aim to create an engaging space for fans to voice their preferences and celebrate their favorite players.
-    </p>
-  </section>
-
-  <!-- Highlights -->
-  <section>
-    <h2>Highlights</h2>
-    <p>축구 선수들의 멋진 순간을 함께 즐겨보세요!</p>
-    <img src="https://via.placeholder.com/600x300?text=Soccer+Highlights" alt="Highlights">
-  </section>
-
-  <!-- Gallery -->
-  <section class="gallery">
-    <h2>Gallery</h2>
-    <img src="https://via.placeholder.com/250?text=Memorabilia" alt="Gallery1">
-    <img src="https://via.placeholder.com/250?text=Player+Action" alt="Gallery2">
-    <img src="https://via.placeholder.com/250?text=Fan+Art" alt="Gallery3">
-  </section>
-
   <!-- Top Players -->
   <section>
     <h2>최고 선수들</h2>
     <div class="players">
-      <div class="player-card" onclick="vote('리오넬 메시')">리오넬 메시</div>
-      <div class="player-card" onclick="vote('크리스티아누 호날두')">호날두</div>
-      <div class="player-card" onclick="vote('네이마르 주니어')">네이마르</div>
+      <div class="player-card" onclick="vote('리오넬 메시')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Lionel_Messi_WC2022.jpg" alt="Messi">
+        리오넬 메시
+      </div>
+      <div class="player-card" onclick="vote('크리스티아누 호날두')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Cristiano_Ronaldo_2018.jpg" alt="Ronaldo">
+        호날두
+      </div>
+      <div class="player-card" onclick="vote('네이마르 주니어')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Neymar_2018.jpg" alt="Neymar">
+        네이마르
+      </div>
     </div>
-    <p id="result" style="margin-top:20px; font-size:18px;"></p>
+    <div id="result"></div>
   </section>
 
   <!-- Contact -->
@@ -118,8 +124,24 @@
   </footer>
 
   <script>
+    // 투표 집계용 객체
+    const votes = {
+      "리오넬 메시": 0,
+      "크리스티아누 호날두": 0,
+      "네이마르 주니어": 0
+    };
+
     function vote(player) {
-      document.getElementById("result").innerText = player + " 선수에게 투표했습니다!";
+      votes[player]++; // 해당 선수 득표수 증가
+      displayResults();
+    }
+
+    function displayResults() {
+      let resultText = "현재 투표 집계 결과:<br>";
+      for (let player in votes) {
+        resultText += player + ": " + votes[player] + "표<br>";
+      }
+      document.getElementById("result").innerHTML = resultText;
     }
   </script>
 </body>
