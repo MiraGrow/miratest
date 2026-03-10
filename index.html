@@ -2,147 +2,55 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Soccer Fan Platform</title>
+  <title>자전거 사고 다발지역 지도</title>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f5f5f5;
-      color: #333;
-    }
-
-    header {
-      background: linear-gradient(to right, #0d47a1, #1976d2);
-      color: white;
-      text-align: center;
-      padding: 80px 20px;
-    }
-    header h1 {
-      font-size: 48px;
-      margin-bottom: 10px;
-    }
-    header p {
-      font-size: 20px;
-      margin-bottom: 20px;
-    }
-    header button {
-      padding: 12px 25px;
-      font-size: 18px;
-      background: #ffeb3b;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    header button:hover {
-      background: #fbc02d;
-    }
-
-    section {
-      padding: 60px 20px;
-      text-align: center;
-    }
-    section h2 {
-      font-size: 32px;
-      margin-bottom: 20px;
-      color: #0d47a1;
-    }
-
-    .players {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      flex-wrap: wrap;
-    }
-    .player-card {
-      background: white;
-      color: #0d47a1;
-      padding: 20px;
-      border-radius: 12px;
-      width: 200px;
-      cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      transition: transform 0.3s, background 0.3s;
-    }
-    .player-card img {
+    #map {
       width: 100%;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    .player-card:hover {
-      transform: translateY(-5px);
-      background: #e3f2fd;
-    }
-
-    #result {
-      margin-top: 25px;
-      font-size: 20px;
-      color: #1976d2;
-    }
-
-    footer {
-      background: #0d47a1;
-      color: white;
-      text-align: center;
-      padding: 30px;
+      height: 600px;
     }
   </style>
+  <!-- 카카오맵 API 불러오기 (본인 키로 교체 필요) -->
+  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_API_KEY"></script>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <h1>좋아하는 축구선수</h1>
-    <p>축구 팬을 위한 새로운 플랫폼</p>
-    <button onclick="alert('정복하기 버튼 클릭!')">정복하기</button>
-  </header>
-
-  <!-- Top Players -->
-  <section>
-    <h2>최고 선수들</h2>
-    <div class="players">
-      <div class="player-card" onclick="vote('리오넬 메시')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Lionel_Messi_WC2022.jpg" alt="Messi">
-        리오넬 메시
-      </div>
-      <div class="player-card" onclick="vote('크리스티아누 호날두')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Cristiano_Ronaldo_2018.jpg" alt="Ronaldo">
-        호날두
-      </div>
-      <div class="player-card" onclick="vote('네이마르 주니어')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Neymar_2018.jpg" alt="Neymar">
-        네이마르
-      </div>
-    </div>
-    <div id="result"></div>
-  </section>
-
-  <!-- Contact -->
-  <footer>
-    <h2>Get in Touch</h2>
-    <p>Phone: 123-456-7890 | Email: hello@reallygreatsite.com</p>
-  </footer>
+  <h1>자전거 사고 다발지역</h1>
+  <div id="map"></div>
 
   <script>
-    // 투표 집계용 객체
-    const votes = {
-      "리오넬 메시": 0,
-      "크리스티아누 호날두": 0,
-      "네이마르 주니어": 0
+    // 지도 초기화
+    var mapContainer = document.getElementById('map');
+    var mapOption = {
+      center: new kakao.maps.LatLng(36.1195, 128.3446), // 구미 중심 좌표 예시
+      level: 5
     };
+    var map = new kakao.maps.Map(mapContainer, mapOption);
 
-    function vote(player) {
-      votes[player]++; // 해당 선수 득표수 증가
-      displayResults();
-    }
+    // 🚲 OpenAPI 호출 (예시 URL, 실제 공공데이터포털 API로 교체 필요)
+    fetch("https://api.data.go.kr/bikeAccident?serviceKey=YOUR_API_KEY&returnType=json")
+      .then(response => response.json())
+      .then(data => {
+        // 데이터 구조에 따라 사고 위치 좌표 추출
+        data.items.forEach(item => {
+          var lat = item.latitude;
+          var lng = item.longitude;
 
-    function displayResults() {
-      let resultText = "현재 투표 집계 결과:<br>";
-      for (let player in votes) {
-        resultText += player + ": " + votes[player] + "표<br>";
-      }
-      document.getElementById("result").innerHTML = resultText;
-    }
+          // 마커 생성
+          var marker = new kakao.maps.Marker({
+            position: new kakao.maps.LatLng(lat, lng),
+            map: map
+          });
+
+          // 정보창
+          var infowindow = new kakao.maps.InfoWindow({
+            content: `<div style="padding:5px;">사고 발생: ${item.accidentDate}</div>`
+          });
+
+          kakao.maps.event.addListener(marker, 'click', function() {
+            infowindow.open(map, marker);
+          });
+        });
+      })
+      .catch(error => console.error("API 호출 오류:", error));
   </script>
 </body>
 </html>
