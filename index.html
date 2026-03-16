@@ -1,56 +1,37 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>자전거 사고 다발지역 지도</title>
-  <style>
-    #map {
-      width: 100%;
-      height: 600px;
-    }
-  </style>
-  <!-- 카카오맵 API 불러오기 (본인 키로 교체 필요) -->
-  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_API_KEY"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Modern Planner</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="script.js"></script>
+  <meta property="og:image" content="https://bolt.new/static/og_default.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
 </head>
 <body>
-  <h1>자전거 사고 다발지역</h1>
-  <div id="map"></div>
+    <div class="container">
+        <header>
+            <h1>CHECK LIST</h1>
+            <div class="date-selector">
+                <span class="year">2026</span>
+                <select id="month-select"></select> 월
+                <select id="day-select"></select> 일
+            </div>
+        </header>
 
-  <script>
-    // 지도 초기화
-    var mapContainer = document.getElementById('map');
-    var mapOption = {
-      center: new kakao.maps.LatLng(36.1195, 128.3446), // 구미 중심 좌표 예시
-      level: 5
-    };
-    var map = new kakao.maps.Map(mapContainer, mapOption);
-
-    // 🚲 OpenAPI 호출 (예시 URL, 실제 공공데이터포털 API로 교체 필요)
-    fetch("https://api.data.go.kr/bikeAccident?serviceKey=YOUR_API_KEY&returnType=json")
-      .then(response => response.json())
-      .then(data => {
-        // 데이터 구조에 따라 사고 위치 좌표 추출
-        data.items.forEach(item => {
-          var lat = item.latitude;
-          var lng = item.longitude;
-
-          // 마커 생성
-          var marker = new kakao.maps.Marker({
-            position: new kakao.maps.LatLng(lat, lng),
-            map: map
-          });
-
-          // 정보창
-          var infowindow = new kakao.maps.InfoWindow({
-            content: `<div style="padding:5px;">사고 발생: ${item.accidentDate}</div>`
-          });
-
-          kakao.maps.event.addListener(marker, 'click', function() {
-            infowindow.open(map, marker);
-          });
-        });
-      })
-      .catch(error => console.error("API 호출 오류:", error));
-  </script>
+        <div class="grid-container">
+            <div class="day-column" id="main-column">
+                <div class="progress-container">
+                    <span class="labels">0% 50% 100%</span>
+                    <div class="progress-bar"><div class="fill" id="progress-fill"></div></div>
+                </div>
+                <div class="day-header" id="current-date-display">2026-01-01</div>
+                <div class="todo-list" id="todo-list"></div>
+                <input type="text" id="todo-input" class="todo-input" placeholder="+ 새로운 할 일 입력 후 엔터">
+            </div>
+        </div>
+    </div>
 </body>
 </html>
